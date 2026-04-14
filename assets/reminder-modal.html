@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Full-screen overlay ── */
+  #overlay {
+    width: 100%; height: 100%;
+    background: rgba(10, 10, 20, 0.72);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: fade-in 0.25s ease forwards;
+  }
+
+  @keyframes fade-in { to { opacity: 1; } }
+
+  /* ── Card ── */
+  #card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 40px 44px 36px;
+    width: 440px;
+    text-align: center;
+    box-shadow:
+      0 24px 80px rgba(0,0,0,0.30),
+      0  4px 16px rgba(0,0,0,0.14),
+      0  0   0  1px rgba(0,0,0,0.06);
+    transform: scale(0.88) translateY(24px);
+    opacity: 0;
+    animation: card-in 0.38s cubic-bezier(0.22, 1.4, 0.36, 1) 0.10s forwards;
+    position: relative;
+    overflow: hidden;          /* clips progress bar to rounded corners */
+  }
+
+  @keyframes card-in {
+    to { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  /* ── Progress bar — replaces ::before, lives inside overflow:hidden ── */
+  #progress-bar {
+    position: absolute;
+    top: 0; left: 0;
+    height: 4px;
+    width: 100%;
+    background: var(--accent, #1677ff);
+    transition: width 0.95s linear;
+  }
+
+  /* ── Icon ── */
+  #icon-wrap {
+    width: 72px; height: 72px;
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 34px;
+    margin: 0 auto 22px;
+    background: var(--icon-bg, #f0f9ff);
+    border: 1.5px solid var(--icon-border, #bae6fd);
+  }
+
+  /* ── Text ── */
+  #title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+  }
+
+  #body-text {
+    font-size: 15px;
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+
+  /* ── Buttons ── */
+  #btn-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .btn {
+    padding: 11px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.12s, box-shadow 0.12s, opacity 0.2s;
+    min-width: 130px;
+  }
+
+  .btn:hover:not(:disabled) { transform: translateY(-1px); }
+  .btn:active:not(:disabled) { transform: translateY(0); }
+
+  #restart-btn {
+    background: var(--accent, #1677ff);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  }
+
+  #restart-btn:hover:not(:disabled) {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.22);
+  }
+
+  #close-btn {
+    background: #f3f4f6;
+    color: #374151;
+  }
+
+  #close-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  #close-btn:hover:not(:disabled) { background: #e5e7eb; }
+
+  /* Spinner inside close button */
+  #lock-ring {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid #9ca3af;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+    margin-bottom: 1px;
+  }
+
+  #lock-ring.done { display: none; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div id="overlay">
+  <div id="card">
+    <div id="progress-bar"></div>
+    <div id="icon-wrap">🔔</div>
+    <div id="title">Reminder</div>
+    <div id="body-text">Time's up!</div>
+    <div id="btn-row">
+      <button class="btn" id="restart-btn">↺ Restart Timer</button>
+      <button class="btn" id="close-btn" disabled>
+        <span id="lock-ring"></span>
+        <span id="close-label">Close (5)</span>
+      </button>
+    </div>
+    <div id="queue-hint" style="margin-top:16px;font-size:12px;color:#9ca3af;display:none;"></div>
+  </div>
+</div>
+
+<script>
+  let reminderType = null;
+  let closeTimer   = null;
+  const CLOSE_SECS = 5;
+
+  window.modalAPI.onData((data) => {
+    reminderType = data.type;
+
+    document.getElementById('card').style.setProperty('--accent',      data.color);
+    document.getElementById('card').style.setProperty('--icon-bg',     data.iconBg);
+    document.getElementById('card').style.setProperty('--icon-border', data.iconBorder);
+
+    document.getElementById('icon-wrap').textContent  = data.icon;
+    document.getElementById('title').textContent      = data.title;
+    document.getElementById('body-text').textContent  = data.body;
+
+    // Show queue hint if more reminders are waiting
+    const queueHint = document.getElementById('queue-hint');
+    if (data.queueLength > 0) {
+      queueHint.style.display = 'block';
+      queueHint.textContent   = `${data.queueLength} more reminder${data.queueLength > 1 ? 's' : ''} waiting`;
+    }
+
+    // Progress bar: starts full, shrinks to 0 over CLOSE_SECS seconds
+    const bar        = document.getElementById('progress-bar');
+    bar.style.background   = data.color;
+    bar.style.transition   = 'none';
+    bar.style.width        = '100%';
+
+    const closeBtn   = document.getElementById('close-btn');
+    const closeLabel = document.getElementById('close-label');
+    const lockRing   = document.getElementById('lock-ring');
+
+    let secs = CLOSE_SECS;
+    closeLabel.textContent = `Close (${secs})`;
+
+    // Kick off the shrink animation after a frame so the 100% is painted first
+    requestAnimationFrame(() => {
+      bar.style.transition = `width ${CLOSE_SECS}s linear`;
+      bar.style.width      = '0%';
+    });
+
+    closeTimer = setInterval(() => {
+      secs--;
+      if (secs <= 0) {
+        clearInterval(closeTimer);
+        closeBtn.disabled      = false;
+        closeLabel.textContent = 'Close';
+        lockRing.classList.add('done');
+      } else {
+        closeLabel.textContent = `Close (${secs})`;
+      }
+    }, 1000);
+  });
+
+  document.getElementById('restart-btn').onclick = () => {
+    clearInterval(closeTimer);
+    window.modalAPI.restart(reminderType);
+  };
+
+  document.getElementById('close-btn').onclick = () => {
+    clearInterval(closeTimer);
+    window.modalAPI.close();
+  };
+</script>
+</body>
+</html>

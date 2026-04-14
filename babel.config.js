@@ -1,0 +1,6 @@
+module.exports = {
+  presets: [
+    ['@babel/preset-env', { targets: { electron: '27' } }],
+    ['@babel/preset-react', { runtime: 'automatic' }],
+  ],
+};
