@@ -35,16 +35,6 @@ Your **Reminder Buddy** mascot tags along for the ride — there's a different p
 
 <br/>
 
-## Download
-
-| Platform | Installer |
-|----------|-----------|
-| Windows 10 / 11 (x64) | **[Pausely-Setup-1.2.0.exe](https://github.com/gopudas90/break-reminder/releases/latest/download/Pausely-Setup-1.2.0.exe)** (~82 MB) |
-
-Run the installer and Pausely will live in your system tray. macOS and Linux builds aren't shipped yet.
-
-<br/>
-
 ## Features
 
 - ◐ &nbsp; **Three independent timers** — break, water, and screen-break, each with its own on/off switch and interval
@@ -75,20 +65,6 @@ All intervals are configurable from the **Settings** tab.
 - ~250 MB disk space
 - 2 GB RAM (4 GB recommended)
 - No internet connection required
-
-<br/>
-
-## Build from source
-
-```bash
-git clone https://github.com/gopudas90/break-reminder.git
-cd break-reminder
-npm install
-npm start          # run in dev mode
-npm run dist:win   # build a Windows installer
-```
-
-Output lands in `release/Pausely Setup <version>.exe`.
 
 <br/>
 
