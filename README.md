@@ -2,7 +2,7 @@
 
 # Pausely
 
-[![Latest release](https://img.shields.io/github/v/release/gopudas90/break-reminder?style=flat-square&color=ff6b1a&labelColor=1e1e1e)](https://github.com/gopudas90/break-reminder/releases/latest)
+[![Latest release](https://img.shields.io/github/v/release/gopudas90/pausely?style=flat-square&color=ff6b1a&labelColor=1e1e1e)](https://github.com/gopudas90/pausely/releases/latest)
 [![Platform](https://img.shields.io/badge/platform-windows_x64-ffffff?style=flat-square&labelColor=1e1e1e)](#download)
 [![License](https://img.shields.io/badge/license-MIT-ffffff?style=flat-square&labelColor=1e1e1e)](LICENSE)
 
@@ -12,7 +12,7 @@
 
 <br/>
 
-[**↓ Download for Windows**](https://github.com/gopudas90/break-reminder/releases/latest/download/Pausely-Setup-1.2.0.exe) &nbsp;·&nbsp; [Releases](https://github.com/gopudas90/break-reminder/releases) &nbsp;·&nbsp; [Privacy](PRIVACY.md)
+[**↓ Download for Windows**](https://github.com/gopudas90/pausely/releases/latest/download/Pausely-Setup-1.2.0.exe) &nbsp;·&nbsp; [Releases](https://github.com/gopudas90/pausely/releases) &nbsp;·&nbsp; [Privacy](PRIVACY.md)
 
 </div>
 
