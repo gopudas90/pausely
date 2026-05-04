@@ -30,8 +30,6 @@ Pausely runs quietly in your system tray and nudges you at the intervals you set
 
 Each reminder fires a soft musical chime, a corner notification, and a full-screen modal so you actually notice it. Timers stop after each reminder and only restart when you ask them to — no autopilot.
 
-Your **Reminder Buddy** mascot tags along for the ride — there's a different pose for each timer type, so the nudge feels personal rather than mechanical.
-
 <br/>
 
 ## Features
