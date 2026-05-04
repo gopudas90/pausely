@@ -3,7 +3,6 @@
 # Pausely
 
 [![Latest release](https://img.shields.io/github/v/release/gopudas90/break-reminder?style=flat-square&color=ff6b1a&labelColor=1e1e1e)](https://github.com/gopudas90/break-reminder/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/gopudas90/break-reminder/total?style=flat-square&color=ffffff&labelColor=1e1e1e)](https://github.com/gopudas90/break-reminder/releases)
 [![Platform](https://img.shields.io/badge/platform-windows_x64-ffffff?style=flat-square&labelColor=1e1e1e)](#download)
 [![License](https://img.shields.io/badge/license-MIT-ffffff?style=flat-square&labelColor=1e1e1e)](LICENSE)
 
